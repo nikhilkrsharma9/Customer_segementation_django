@@ -1,0 +1,60 @@
+{% extends "segmentation/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white py-3">
+                    <h4 class="mb-0">Customer Segmentation Results ({{ n_clusters }} Clusters)</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Customer Segments (2D)</h5>
+                </div>
+                <div class="card-body">
+                    <img src="data:image/png;base64,{{ plots.cluster }}" class="img-fluid" alt="Cluster Plot">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Cluster Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <img src="data:image/png;base64,{{ plots.distribution }}" class="img-fluid" alt="Distribution Plot">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Sample Data with Cluster Assignments</h5>
+                </div>
+                <div class="card-body">
+                    {{ table_html|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="{% url 'segmentation:upload' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-redo mr-2"></i>Analyze Another Dataset
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

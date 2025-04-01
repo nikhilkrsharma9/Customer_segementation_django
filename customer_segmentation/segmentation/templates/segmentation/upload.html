@@ -1,0 +1,31 @@
+{% extends "segmentation/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Upload Customer Data</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_file">CSV File:</label>
+                            {{ form.file }}
+                            <small class="form-text text-muted">
+                                Please upload a CSV file containing customer data with 'Annual Income (k$)' and 'Spending Score (1-100)' columns.
+                            </small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-4">
+                            <i class="fas fa-upload mr-2"></i>Upload and Analyze
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

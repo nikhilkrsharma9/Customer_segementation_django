@@ -1,0 +1,40 @@
+{% extends "segmentation/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Determine Optimal Clusters</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="data:image/png;base64,{{ elbow_plot }}" class="img-fluid" alt="Elbow Method Plot">
+                        <p class="mt-3 text-muted">Use the elbow method to determine the optimal number of clusters.</p>
+                    </div>
+                    
+                    <form method="post" action="{% url 'segmentation:process' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="file_id" value="{{ file_id }}">
+                        
+                        <div class="form-group">
+                            <label for="n_clusters">Number of Clusters:</label>
+                            <input type="number" class="form-control" id="n_clusters" name="n_clusters" 
+                                   min="2" max="10" required>
+                            <small class="form-text text-muted">
+                                Enter the optimal number of clusters based on the elbow plot (typically where the "elbow" bends).
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-block mt-4">
+                            <i class="fas fa-chart-pie mr-2"></i>Generate Segments
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

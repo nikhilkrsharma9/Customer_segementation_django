@@ -1,0 +1,96 @@
+<div id="chatbot-container" class="chatbot-container">
+    <div class="chatbot-header">
+        <h5>Segmentation Assistant</h5>
+        <button id="chatbot-toggle" class="btn btn-sm btn-primary">-</button>
+    </div>
+    <div id="chatbot-body" class="chatbot-body">
+        <div id="chat-messages"></div>
+        <div class="input-group">
+            <input type="text" id="user-message" class="form-control" placeholder="Ask about segmentation...">
+            <button id="send-message" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+.chatbot-header {
+    background: #4e73df;
+    color: white;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.chatbot-body {
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    display: block;
+}
+#chat-messages {
+    height: 240px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatbotBody = document.getElementById('chatbot-body');
+    const toggleBtn = document.getElementById('chatbot-toggle');
+    
+    toggleBtn.addEventListener('click', function() {
+        if (chatbotBody.style.display === 'none') {
+            chatbotBody.style.display = 'block';
+            toggleBtn.textContent = '-';
+        } else {
+            chatbotBody.style.display = 'none';
+            toggleBtn.textContent = '+';
+        }
+    });
+
+    // Chat functionality
+    document.getElementById('send-message').addEventListener('click', sendMessage);
+    document.getElementById('user-message').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+        const message = document.getElementById('user-message').value;
+        if (!message) return;
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        document.getElementById('user-message').value = '';
+        
+        // Get bot response
+        fetch('/chatbot/api/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+            body: JSON.stringify({message: message})
+        })
+        .then(response => response.json())
+        .then(data => addMessage(data.response, 'bot'));
+    }
+
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `alert ${sender === 'user' ? 'alert-primary' : 'alert-secondary'}`;
+        messageDiv.textContent = text;
+        document.getElementById('chat-messages').appendChild(messageDiv);
+        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+    }
+});
+</script>
